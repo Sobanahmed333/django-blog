@@ -45,14 +45,17 @@ INSTALLED_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'django_extensions'
+    'django_extensions',
+    'debug_toolbar',
 ]
 
-INSTALLED_APPS += [
-    *THIRD_PARTY_APPS,
+CUSTOM_APPS = [
     'apps.user',
     'apps.post',
+
 ]
+
+INSTALLED_APPS += [*THIRD_PARTY_APPS, *CUSTOM_APPS]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,6 +66,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CUSTOM_MIDDLEWARE = []
+
+THIRD_PARTY_MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+MIDDLEWARE += [*THIRD_PARTY_MIDDLEWARE, *CUSTOM_MIDDLEWARE]
 
 ROOT_URLCONF = 'blog.urls'
 
@@ -139,3 +150,13 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "user.User"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+if DEBUG:
+    import socket  # only if you haven't already imported this
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]

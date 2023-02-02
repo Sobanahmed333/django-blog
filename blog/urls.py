@@ -25,5 +25,8 @@ urlpatterns = [
     path("api/v1/", include([
         path('', include("apps.post.api.v1.urls")),
     ])),
+]
 
+urlpatterns += [
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
